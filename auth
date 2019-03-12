@@ -30,8 +30,8 @@ import base64
 import cgi
 from http import cookies as Cookie
 import json
-import onetimepass
 import os
+import pyotp
 import re
 import settings
 import sys
@@ -58,7 +58,9 @@ if user is None or user_secret is None:
     print("Contact your administrator to obtain your 2FA secret.\n")
     sys.exit()
 
-token_gen = str(onetimepass.get_totp(user_secret))
+totp = pyotp.TOTP(user_secret)
+token_gen = str(totp.now())
+
 if token_user == token_gen:
     cookie = Cookie.SimpleCookie()
     # Create a random key and store it in session cookie
